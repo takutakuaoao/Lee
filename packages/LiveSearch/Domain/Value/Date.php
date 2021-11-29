@@ -1,6 +1,6 @@
 <?php
 
-namespace Lee\LiveSearch\Domain\Value\Live;
+namespace Lee\LiveSearch\Domain\Value;
 
 use Carbon\Carbon;
 use InvalidArgumentException;
@@ -28,6 +28,50 @@ class Date
         }
 
         $this->value = Carbon::create($y, $m, $d, $h, $i);
+    }
+
+    /**
+     * 日時比較（比較対象未満）
+     *
+     * @param Date $date
+     * @return boolean
+     */
+    public function isBefore(Date $date): bool
+    {
+        return $this->value->lt($date->value);
+    }
+
+    /**
+     * 日時比較（比較対象以下）
+     *
+     * @param Date $date
+     * @return boolean
+     */
+    public function isUntil(Date $date): bool
+    {
+        return $this->value->lte($date->value);
+    }
+
+    /**
+     * 日時比較（比較対象より後）
+     *
+     * @param Date $date
+     * @return boolean
+     */
+    public function isAfter(Date $date): bool
+    {
+        return $this->value->gt($date->value);
+    }
+
+    /**
+     * 日時比較（比較対象以上）
+     *
+     * @param Date $date
+     * @return boolean
+     */
+    public function isSince(Date $date): bool
+    {
+        return $this->value->gte($date->value);
     }
 
     public static function makeErrorMessage(int $y, int $m, int $d, int $h, int $i): string

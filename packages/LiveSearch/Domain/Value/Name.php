@@ -1,6 +1,6 @@
 <?php
 
-namespace Lee\LiveSearch\Domain\Value\Live;
+namespace Lee\LiveSearch\Domain\Value;
 
 use InvalidArgumentException;
 

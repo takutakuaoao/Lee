@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\LiveSearch\Domain\Value\Live;
+namespace Tests\Unit\LiveSearch\Domain\Value;
 
 use InvalidArgumentException;
-use Lee\LiveSearch\Domain\Value\Live\Date;
+use Lee\LiveSearch\Domain\Value\Date;
 use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
@@ -34,6 +34,38 @@ class DateTest extends TestCase
         $date = new Date(2021, 1.1, 1.6, 23.9, 1.5);
 
         $this->assertEquals('2021/01/01 23:01:00', $date);
+    }
+
+    public function test_is_before(): void
+    {
+        $date = new Date(2021, 01, 01, 17, 00);
+
+        $this->assertTrue($date->isBefore(new Date(2021, 01, 01, 18, 00)));
+        $this->assertFalse($date->isBefore(new Date(2021, 01, 01, 17, 00)));
+    }
+
+    public function test_is_until(): void
+    {
+        $date = new Date(2021, 01, 01, 17, 00);
+
+        $this->assertTrue($date->isUntil(new Date(2021, 01, 01, 18, 00)));
+        $this->assertTrue($date->isUntil(new Date(2021, 01, 01, 17, 00)));
+    }
+
+    public function test_is_after(): void
+    {
+        $date = new Date(2021, 01, 01, 17, 00);
+
+        $this->assertTrue($date->isAfter(new Date(2021, 01, 01, 16, 00)));
+        $this->assertFalse($date->isAfter(new Date(2021, 01, 01, 17, 00)));
+    }
+
+    public function test_is_since(): void
+    {
+        $date = new Date(2021, 01, 01, 17, 00);
+
+        $this->assertTrue($date->isSince(new Date(2021, 01, 01, 16, 00)));
+        $this->assertTrue($date->isSince(new Date(2021, 01, 01, 17, 00)));
     }
 
     /**

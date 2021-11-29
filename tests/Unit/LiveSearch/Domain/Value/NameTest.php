@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\LiveSearch\Domain\Value\Live;
+namespace Tests\Unit\LiveSearch\Domain\Value;
 
 use InvalidArgumentException;
-use Lee\LiveSearch\Domain\Value\Live\Name;
+use Lee\LiveSearch\Domain\Value\Name;
 use PHPUnit\Framework\TestCase;
 
 use function Lee\makeString;
