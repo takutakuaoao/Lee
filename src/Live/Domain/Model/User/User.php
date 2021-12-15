@@ -4,66 +4,51 @@ declare(strict_types=1);
 
 namespace Lee\Live\Domain\Model\User;
 
+use Lee\Live\Domain\Model\Artist\Artist;
 use Lee\Live\Domain\Model\Artist\ArtistId;
+use Lee\Live\Domain\Model\Artist\ArtistRepository;
 
 final class User
 {
-    /** @var ArtistId[] */
-    private array $artistIds;
-
     private UserHasArtistSpecification $artistSpecification;
+    private FavoriteArtists $favoriteArtists;
 
-    /**
-     * @param UserId     $userId
-     * @param Email      $email
-     * @param UserType   $userType
-     * @param ArtistId[] $artistIds
-     */
     public function __construct(
         private UserId $userId,
         private Email $email,
         private UserType $userType,
-        array $artistIds = [],
+        ?FavoriteArtists $favoriteArtists = null,
     ) {
         $this->artistSpecification = new UserHasArtistSpecification;
+        $this->favoriteArtists     = is_null($favoriteArtists) ? new FavoriteArtists([]) : $favoriteArtists;
 
-        if (!$this->artistSpecification->isSatisfiedBy($userType, ...$artistIds)) {
+        if (!$this->artistSpecification->isSatisfiedBy($this->favoriteArtists, $userType)) {
             throw new UserSpecificationException('');
         }
-
-        $this->artistIds = $artistIds;
     }
 
-    public function registerArtist(ArtistId $artistId): self
+    public function registerFavorite(ArtistId $artistId): self
     {
-        if (!$this->artistSpecification->isSatisfiedBy($this->userType, ...$this->artistIds, ...[$artistId])) {
+        if (!$this->artistSpecification->isSatisfiedBy($favoriteArtists = $this->favoriteArtists->add($artistId), $this->userType)) {
             throw new UserSpecificationException('');
         }
 
-        $this->artistIds[] = $artistId;
+        $this->favoriteArtists = $favoriteArtists;
 
         return $this;
     }
 
     /**
-     * @param  ArtistId[]      $artistIds
+     * @param  ArtistId[]      $liveActors
      * @return ArtistId[]|null
      */
-    public function selectFavoriteArtist(array $artistIds): ?array
+    public function fetchLiveActedFavoriteArtist(array $liveActors): ?array
     {
-        if ($this->artistIds === []) {
+        if (is_null($liveActedFavoriteArtists = $this->favoriteArtists->selectFavoriteArtist($liveActors))) {
             return null;
         }
 
-        $matchedArtistId = array_filter($artistIds, function(ArtistId $artistId) {
-            return $artistId->isContain($this->artistIds);
-        });
-
-        if ($matchedArtistId === []) {
-            return null;
-        }
-
-        return $matchedArtistId;
+        return $liveActedFavoriteArtists->getArtistIds();
     }
 
     public function getEmail(): Email
@@ -77,9 +62,7 @@ final class User
             'id'        => (string)$this->userId,
             'email'     => (string)$this->email,
             'userType'  => (string)$this->userType,
-            'artistIds' => array_map(function (ArtistId $aArtistId) {
-                return (string)$aArtistId;
-            }, $this->artistIds),
+            'artistIds' => $this->favoriteArtists->toArray(),
         ];
     }
 }

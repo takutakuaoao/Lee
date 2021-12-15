@@ -27,7 +27,7 @@ class LiveReportMailerServiceTest extends TestCase
             '住所',
         );
         $users = [
-            (new UserFactory)->createGeneralUser(new Email('test@test.com'))->registerArtist(new ArtistId('artist-1')),
+            (new UserFactory)->createGeneralUser(new Email('test@test.com'))->registerFavorite(new ArtistId('artist-1')),
         ];
         $liveReportNotifier = new LiveReportNotifier(
             $registeredLiveEvent,

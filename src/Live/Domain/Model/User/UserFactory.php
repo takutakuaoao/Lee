@@ -21,7 +21,7 @@ final class UserFactory
             $id,
             $email,
             $type,
-            $artistIds,
+            new FavoriteArtists($artistIds),
         );
     }
 

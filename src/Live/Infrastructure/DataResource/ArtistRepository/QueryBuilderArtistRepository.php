@@ -46,6 +46,14 @@ final class QueryBuilderArtistRepository implements ArtistRepository
         );
     }
 
+    public function findArtistsByIds(array $artistIds): ?array
+    {
+        $artists = array_map(fn (ArtistId $artistId) => $this->findById($artistId), $artistIds);
+        $artists = array_filter($artists, fn ($artist) => !is_null($artist));
+
+        return array_values($artists);
+    }
+
     public function issueId(): ArtistId
     {
         return new ArtistId(uniqid('', true));

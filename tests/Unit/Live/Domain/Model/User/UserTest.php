@@ -6,6 +6,7 @@ namespace Tests\Unit\Live\Domain\Model\User;
 
 use Lee\Live\Domain\Model\Artist\ArtistId;
 use Lee\Live\Domain\Model\User\Email;
+use Lee\Live\Domain\Model\User\FavoriteArtists;
 use Lee\Live\Domain\Model\User\User;
 use Lee\Live\Domain\Model\User\UserFactory;
 use Lee\Live\Domain\Model\User\UserId;
@@ -26,13 +27,13 @@ class UserTest extends TestCase
     {
         $this->expectException(UserSpecificationException::class);
 
-        new User(new UserId(1), new Email('test@test.com'), UserType::general(), [new ArtistId('1'), new ArtistId('1')]);
+        new User(new UserId(1), new Email('test@test.com'), UserType::general(), new FavoriteArtists([new ArtistId('1'), new ArtistId('1')]));
     }
 
-    public function test_register_artist(): void
+    public function test_register_favorite(): void
     {
         $user = new User(new UserId(1), new Email('test@test.com'), UserType::general());
-        $user->registerArtist(new ArtistId('1'));
+        $user->registerFavorite(new ArtistId('1'));
 
         $userPrimitive = $user->toPrimitive();
 
@@ -44,24 +45,7 @@ class UserTest extends TestCase
     {
         $this->expectException(UserSpecificationException::class);
 
-        $user = new User(new UserId(1), new Email('test@test.com'), UserType::general(), [new ArtistId('1')]);
-        $user->registerArtist(new ArtistId('1'));
-    }
-
-    public function test_select_favorite_artist(): void
-    {
-        $user = (new UserFactory)->createGeneralUser(new Email('test@test.com'))
-            ->registerArtist(new ArtistId('artist-1'))
-            ->registerArtist(new ArtistId('artist-2'))
-            ->registerArtist(new ArtistId('artist-3'));
-
-        $favoriteArtists = $user->selectFavoriteArtist([
-            new ArtistId('artist-1'),
-            new ArtistId('artist-2'),
-        ]);
-
-        $this->assertEquals('artist-1', $favoriteArtists[0]);
-        $this->assertEquals('artist-2', $favoriteArtists[1]);
-        $this->assertEquals(2, count($favoriteArtists));
+        $user = new User(new UserId(1), new Email('test@test.com'), UserType::general(), new FavoriteArtists([new ArtistId('1')]));
+        $user->registerFavorite(new ArtistId('1'));
     }
 }

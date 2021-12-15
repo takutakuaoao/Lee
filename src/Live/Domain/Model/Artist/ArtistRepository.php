@@ -10,4 +10,10 @@ interface ArtistRepository
     public function issueId(): ArtistId;
     public function exists(ArtistId $artistId): bool;
     public function findById(ArtistId $artistId): ?Artist;
+
+    /**
+     * @param ArtistId[] $artistIds
+     * @return Artist[]|null
+     */
+    public function findArtistsByIds(array $artistIds): ?array;
 }

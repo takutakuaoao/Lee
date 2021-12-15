@@ -15,6 +15,7 @@ final class NonConnectionDataResourceArtistRepository implements ArtistRepositor
     public ArtistId $returnArtistId;
     public bool $returnBool = true;
     public ?Artist $returnArtist;
+    public ?array $returnArtists;
 
     public function __construct()
     {
@@ -23,6 +24,7 @@ final class NonConnectionDataResourceArtistRepository implements ArtistRepositor
             new ArtistId('test'),
             new Name('artist name'),
         );
+        $this->returnArtists = [$this->returnArtist];
     }
 
     public function findIdByName(string $name): ?ArtistId
@@ -43,5 +45,14 @@ final class NonConnectionDataResourceArtistRepository implements ArtistRepositor
     public function findById(ArtistId $artistId): ?Artist
     {
         return $this->returnArtist;
+    }
+
+    /**
+     * @param  ArtistId[]    $artistIds
+     * @return Artist[]|null
+     */
+    public function findArtistsByIds(array $artistIds): ?array
+    {
+        return $this->returnArtists;
     }
 }

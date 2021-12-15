@@ -30,19 +30,24 @@ rectangle RUser {
         registerArtist()
     }
 
+    class FavoriteArtists {
+
+    }
+
     note bottom
     **アーティスト保持仕様**
     アーティスト名は重複しない
     一般ユーザーは5件までアーティストを登録できる
     プレミアムユーザーは無制限で登録できる
-end note
+    end note
 
-enum UserType {
-    GENERAL
-    PREMIUM
-}
+    enum UserType {
+        GENERAL
+        PREMIUM
+    }
 
-UserType - User
+UserType -- User
+User - FavoriteArtists
 }
 
 rectangle RArtist {
@@ -88,7 +93,7 @@ liveHouseLocation
 Live -down-> RegisteredLiveEvent
 
 Artist --*"1..*" Live
-Artist --*"0..*" User
+Artist --*"0..*" FavoriteArtists
 RegisteredLiveEvent -down-* LiveReportNotifier
 note on link
 ライブ登録時に生成

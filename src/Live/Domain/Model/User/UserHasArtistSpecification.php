@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Lee\Live\Domain\Model\User;
 
-use InvalidArgumentException;
 use Lee\Live\Domain\Model\Artist\ArtistId;
 
 /**
@@ -17,30 +16,17 @@ final class UserHasArtistSpecification
 {
     private const MAX_ARTIST_COUNT = 5;
 
-    public function isSatisfiedBy(UserType $userType, ArtistId ...$artistId): bool
+    public function isSatisfiedBy(FavoriteArtists $favoriteArtists, UserType $userType): bool
     {
-        if ($this->isDuplicateArtistId(...$artistId)) {
+        if (!$favoriteArtists->isAllUnique()) {
             return false;
         }
 
-        return !$this->hasOverMaxArtists($userType, ...$artistId);
+        return !$this->hasOverMaxArtists($userType, $favoriteArtists);
     }
 
-    private function isDuplicateArtistId(ArtistId ...$artistId): bool
+    private function hasOverMaxArtists(UserType $userType, FavoriteArtists $favoriteArtists): bool
     {
-        if ($artistId === []) {
-            return false;
-        }
-
-        $artistIds = array_map(function(ArtistId $aArtistId) {
-            return $aArtistId->getValue();
-        }, $artistId);
-
-        return $artistIds !== array_unique($artistIds);
-    }
-
-    private function hasOverMaxArtists(UserType $userType, ArtistId ...$artistId): bool
-    {
-        return $userType->isGeneral() && count($artistId) > self::MAX_ARTIST_COUNT;
+        return $userType->isGeneral() && $favoriteArtists->count() > self::MAX_ARTIST_COUNT;
     }
 }

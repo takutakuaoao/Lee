@@ -20,11 +20,6 @@ final class LiveReportNotifier
     ) {
     }
 
-    public function notifier(LiveReportSenderService $service): void
-    {
-        $service->send($this);
-    }
-
     /**
      * @return User[]
      */
@@ -39,11 +34,6 @@ final class LiveReportNotifier
     public function getActorIds(): array
     {
         return $this->registeredLiveEvent->getArtistIds();
-    }
-
-    public function getEmails(): array
-    {
-        return array_map(fn (User $user) => $user->getEmail(), $this->users);
     }
 
     public function getLiveName(): string

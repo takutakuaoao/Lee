@@ -6,7 +6,7 @@ namespace Lee\Live\Infrastructure\External\Notification\LiveReportSenderService;
 
 use App\Mail\LiveReportMailable;
 use Illuminate\Support\Facades\Mail;
-use Lee\Live\Domain\Model\Artist\ArtistId;
+use Lee\Live\Domain\Model\Artist\Artist;
 use Lee\Live\Domain\Model\Artist\ArtistRepository;
 use Lee\Live\Domain\Model\LiveReport\LiveReportNotifier;
 use Lee\Live\Domain\Model\LiveReport\LiveReportSenderService;
@@ -24,11 +24,8 @@ final class LiveReportMailerService implements LiveReportSenderService
     public function send(LiveReportNotifier $liveReportNotifier): void
     {
         foreach ($liveReportNotifier->getUsers() as $user) {
-            $artists = array_map(function (ArtistId $artistId) {
-                $artist = $this->artistRepository->findById($artistId);
-
-                return $artist->getName();
-            }, $user->selectFavoriteArtist($liveReportNotifier->getActorIds()));
+            $artistIds = $user->fetchLiveActedFavoriteArtist($liveReportNotifier->getActorIds());
+            $artists   = $this->artistRepository->findArtistsByIds($artistIds);
 
             Mail::to((string)$user->getEmail())->send(new LiveReportMailable(
                 self::MAIL_TEMPLATE,
@@ -37,7 +34,7 @@ final class LiveReportMailerService implements LiveReportSenderService
                 $liveReportNotifier->getLiveDate(),
                 $liveReportNotifier->getLiveHouseName(),
                 $liveReportNotifier->getLiveHouseLocation(),
-                implode('、', $artists),
+                implode('、', array_map(fn (Artist $artist) => $artist->getName(), $artists)),
             ));
         }
     }
