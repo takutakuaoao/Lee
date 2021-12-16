@@ -12,4 +12,9 @@ final class ArtistFactory
     {
         return new Artist($artistId, $name);
     }
+
+    public function createNewArtist(Name $name): Artist
+    {
+        return new Artist(ArtistId::createNewId(), $name);
+    }
 }

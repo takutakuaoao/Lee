@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lee\Live\Infrastructure\DataResource\ArtistRepository;
 
 use Lee\Live\Domain\Model\Artist\Artist;
+use Lee\Live\Domain\Model\Artist\ArtistDto;
 use Lee\Live\Domain\Model\Artist\ArtistFactory;
 use Lee\Live\Domain\Model\Artist\ArtistId;
 use Lee\Live\Domain\Model\Artist\ArtistRepository;
@@ -16,6 +17,9 @@ final class NonConnectionDataResourceArtistRepository implements ArtistRepositor
     public bool $returnBool = true;
     public ?Artist $returnArtist;
     public ?array $returnArtists;
+
+    /** @var ArtistDto[] */
+    public array $storeArtist = [];
 
     public function __construct()
     {
@@ -54,5 +58,10 @@ final class NonConnectionDataResourceArtistRepository implements ArtistRepositor
     public function findArtistsByIds(array $artistIds): ?array
     {
         return $this->returnArtists;
+    }
+
+    public function store(ArtistDto $artistDto): void
+    {
+        $this->storeArtist[] = $artistDto;
     }
 }

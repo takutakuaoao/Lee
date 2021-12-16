@@ -16,6 +16,11 @@ final class ArtistId implements ValueObject
         $this->value = $value ?? uniqid('', true);
     }
 
+    public static function createNewId(): self
+    {
+        return new ArtistId();
+    }
+
     public function getValue(): string
     {
         return $this->value;

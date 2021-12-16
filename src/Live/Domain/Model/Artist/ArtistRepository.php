@@ -16,4 +16,6 @@ interface ArtistRepository
      * @return Artist[]|null
      */
     public function findArtistsByIds(array $artistIds): ?array;
+
+    public function store(ArtistDto $artistDto): void;
 }

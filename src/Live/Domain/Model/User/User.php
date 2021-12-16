@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Lee\Live\Domain\Model\User;
 
-use Lee\Live\Domain\Model\Artist\Artist;
 use Lee\Live\Domain\Model\Artist\ArtistId;
-use Lee\Live\Domain\Model\Artist\ArtistRepository;
 
 final class User
 {

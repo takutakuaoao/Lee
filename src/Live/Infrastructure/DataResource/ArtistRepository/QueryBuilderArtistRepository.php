@@ -7,6 +7,7 @@ namespace Lee\Live\Infrastructure\DataResource\ArtistRepository;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Lee\Live\Domain\Model\Artist\Artist;
+use Lee\Live\Domain\Model\Artist\ArtistDto;
 use Lee\Live\Domain\Model\Artist\ArtistFactory;
 use Lee\Live\Domain\Model\Artist\ArtistId;
 use Lee\Live\Domain\Model\Artist\ArtistRepository;
@@ -64,5 +65,15 @@ final class QueryBuilderArtistRepository implements ArtistRepository
         $query = $this->builder->where('id', (string)$id);
 
         return $query->exists();
+    }
+
+    public function store(ArtistDto $artistDto): void
+    {
+        $this->builder->insert([
+            'id'   => $artistDto->getId(),
+            'name' => $artistDto->getName(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

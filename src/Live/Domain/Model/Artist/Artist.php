@@ -19,6 +19,14 @@ class Artist
         return $this->name;
     }
 
+    public function toDto(): ArtistDto
+    {
+        return new ArtistDto(
+            (string)$this->id,
+            (string)$this->name,
+        );
+    }
+
     public function sameAs(Artist $artist): bool
     {
         return $this->id->equal($artist->id);

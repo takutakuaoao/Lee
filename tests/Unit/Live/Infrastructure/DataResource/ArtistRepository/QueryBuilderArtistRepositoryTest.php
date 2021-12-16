@@ -7,6 +7,7 @@ namespace Tests\Unit\Live\Infrastructure\DataResource\ArtistRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Lee\Live\Domain\Model\Artist\Artist;
+use Lee\Live\Domain\Model\Artist\ArtistDto;
 use Lee\Live\Domain\Model\Artist\ArtistId;
 use Lee\Live\Domain\Model\Live\Name;
 use Lee\Live\Infrastructure\DataResource\ArtistRepository\QueryBuilderArtistRepository;
@@ -62,5 +63,16 @@ class QueryBuilderArtistRepositoryTest extends TestCase
         DB::table('artists')->insert(['id' => 'test', 'name' => 'artist-name']);
 
         $this->assertTrue($this->repository->exists(new ArtistId('test')));
+    }
+
+    public function test_store(): void
+    {
+        $artistDto = new ArtistDto('artist-1', 'artist-name');
+        $this->repository->store($artistDto);
+
+        $result = DB::table('artists')->where('id', '=', 'artist-1')->get();
+        $this->assertEquals(1, $result->count());
+        $this->assertEquals('artist-1', $result[0]->id);
+        $this->assertEquals('artist-name', $result[0]->name);
     }
 }
