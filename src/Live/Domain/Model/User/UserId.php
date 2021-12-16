@@ -12,6 +12,11 @@ final class UserId implements ValueObject
     {
     }
 
+    public static function issueNewId(): self
+    {
+        return new self(uniqid('', true));
+    }
+
     public function equal(ValueObject $value): bool
     {
         return get_class($this) === get_class($value) && $this->value === $value->value;
