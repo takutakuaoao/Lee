@@ -1,0 +1,102 @@
+@startuml live
+
+rectangle RLiveReport {
+    class LiveReportNotifier {
+
+    }
+
+    class ReportNotificationPolicy {
+
+    }
+
+    note bottom
+    ライブ情報の通知
+    ライブ開始日が終了している情報は通知しない
+    end note
+
+    ReportNotificationPolicy -right-> LiveReportNotifier
+}
+
+rectangle 通知 {
+
+}
+
+LiveReportNotifier -down-> 通知
+
+rectangle RUser {
+    class User {
+        userId
+        email
+        registerArtist()
+    }
+
+    class FavoriteArtists {
+
+    }
+
+    note bottom
+    **アーティスト保持仕様**
+    アーティスト名は重複しない
+    一般ユーザーは5件までアーティストを登録できる
+    プレミアムユーザーは無制限で登録できる
+    end note
+
+    enum UserType {
+        GENERAL
+        PREMIUM
+    }
+
+UserType -- User
+User - FavoriteArtists
+}
+
+rectangle RArtist {
+class Artist {
+    artistId,
+    artistName
+}
+}
+
+rectangle RLive {
+class Live {
+    liveId
+    liveDate
+    liveName
+}
+
+class LiveHouse {
+    name
+    location
+}
+
+class LiveStorePolicy {
+    storeDate
+}
+note bottom
+新規登録時
+liveId: 一意
+liveDate: 登録日以降の日付
+end note
+
+Live -left- LiveHouse
+Live -down- LiveStorePolicy
+}
+
+class RegisteredLiveEvent {
+artistIds
+liveName
+liveDate
+liveHouseName
+liveHouseLocation
+}
+
+Live -down-> RegisteredLiveEvent
+
+Artist --*"1..*" Live
+Artist --*"0..*" FavoriteArtists
+RegisteredLiveEvent -down-* LiveReportNotifier
+note on link
+ライブ登録時に生成
+end note
+User -down-* LiveReportNotifier
+@enduml
