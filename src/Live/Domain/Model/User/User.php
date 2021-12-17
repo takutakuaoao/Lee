@@ -63,4 +63,9 @@ final class User
             'artistIds' => $this->favoriteArtists->toArray(),
         ];
     }
+
+    public function sameAs(User $user): bool
+    {
+        return $this->userId->equal($user->userId);
+    }
 }

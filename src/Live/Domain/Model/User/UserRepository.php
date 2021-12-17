@@ -19,4 +19,6 @@ interface UserRepository
      * @return User[]|null
      */
     public function findByMultipleArtistId(array $artistIds): ?array;
+
+    public function existsByEmail(Email $email): bool;
 }

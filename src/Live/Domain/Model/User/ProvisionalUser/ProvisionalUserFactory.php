@@ -24,6 +24,16 @@ final class ProvisionalUserFactory
         );
     }
 
+    public function create(UserId $userId, Email $email, Password $password, ProvisionalDate $provisionalDate): ProvisionalUser
+    {
+        return new ProvisionalUser(
+            $userId,
+            $email,
+            $password,
+            $provisionalDate,
+        );
+    }
+
     private static function mustPasswordNotHash(Password $password): void
     {
         if (!$password->isRawPassword()) {
