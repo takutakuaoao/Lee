@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Lee\Live\Domain\Model\User;
 
 use Lee\Live\Domain\Model\Artist\ArtistId;
+use Lee\Live\Domain\Model\User\AuthUser\AuthUser;
+use Lee\Live\Domain\Model\User\ProvisionalUser\ProvisionalUser;
 
 final class UserFactory
 {
@@ -41,5 +43,16 @@ final class UserFactory
             $email,
             UserType::premium()
         );
+    }
+
+    public function createFormalRegistrationUser(ProvisionalUser $provisionalUser): AuthUser
+    {
+        $user = new User(
+            $provisionalUser->getUserId(),
+            $provisionalUser->getEmail(),
+            UserType::general(),
+        );
+
+        return new AuthUser($user, $provisionalUser->getPassword());
     }
 }

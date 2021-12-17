@@ -77,4 +77,9 @@ final class QueryBuilderUserRepository implements UserRepository
 
         return $users->toArray();
     }
+
+    public function existsByEmail(Email $email): bool
+    {
+        return DB::table('users')->where('email', (string)$email)->exists();
+    }
 }

@@ -7,6 +7,7 @@ namespace Tests\Unit\Live\Infrastructure\DataResource\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Lee\Live\Domain\Model\Artist\ArtistId;
+use Lee\Live\Domain\Model\User\Email;
 use Lee\Live\Infrastructure\DataResource\UserRepository\QueryBuilderUserRepository;
 use Tests\TestCase;
 
@@ -88,5 +89,11 @@ class QueryBuilderUserRepositoryTest extends TestCase
         $this->assertEquals('user1', $users[0]->toPrimitive()['id']);
         $this->assertEquals('user2', $users[1]->toPrimitive()['id']);
         $this->assertEquals('user3', $users[2]->toPrimitive()['id']);
+    }
+
+    public function test_exists_by_email(): void
+    {
+        $this->assertTrue($this->queryBuilderUserRepository->existsByEmail(new Email('test@test.com')));
+        $this->assertFalse($this->queryBuilderUserRepository->existsByEmail(new Email('test999@test.com')));
     }
 }

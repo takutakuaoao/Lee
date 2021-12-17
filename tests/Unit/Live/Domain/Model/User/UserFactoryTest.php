@@ -6,6 +6,9 @@ namespace Tests\Unit\Live\Domain\Model\User;
 
 use Lee\Live\Domain\Model\Artist\ArtistId;
 use Lee\Live\Domain\Model\User\Email;
+use Lee\Live\Domain\Model\User\Password;
+use Lee\Live\Domain\Model\User\ProvisionalUser\ProvisionalDate;
+use Lee\Live\Domain\Model\User\ProvisionalUser\ProvisionalUserFactory;
 use Lee\Live\Domain\Model\User\UserFactory;
 use Lee\Live\Domain\Model\User\UserId;
 use Lee\Live\Domain\Model\User\UserType;
@@ -48,5 +51,28 @@ class UserFactoryTest extends TestCase
         $this->assertEquals('1', $user->toPrimitive()['userType']);
         $this->assertEquals('test@test.com', $user->toPrimitive()['email']);
         $this->assertEquals('artist-1', $user->toPrimitive()['artistIds'][0]);
+    }
+
+    public function test_create_formal_registration_user(): void
+    {
+        $provisionalUser = (new ProvisionalUserFactory)->create(
+            new UserId('test'),
+            new Email('test@test.com'),
+            Password::createHashed('test'),
+            new ProvisionalDate('2021/01/01 00:00:00'),
+        );
+
+        $authUser = (new UserFactory)->createFormalRegistrationUser($provisionalUser);
+
+        $primitives = $authUser->toPrimitives();
+        $expect     = [
+            'id'        => 'test',
+            'email'     => 'test@test.com',
+            'userType'  => 1,
+            'artistIds' => [],
+            'password'  => 'test',
+        ];
+
+        $this->assertEquals($expect, $primitives);
     }
 }

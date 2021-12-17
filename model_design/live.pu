@@ -30,6 +30,12 @@ rectangle RUser {
         registerArtist()
     }
 
+    class AuthUser {
+        password
+    }
+
+    User --* AuthUser
+
     class FavoriteArtists {
 
     }
@@ -46,9 +52,40 @@ rectangle RUser {
         PREMIUM
     }
 
+    class ProvisionalUser {
+        Email
+        Password
+        ProvisionalDate
+    }
+
+    class ProvisionalRepository {
+
+    }
+
+    class RegisteredProvisional {
+        Email
+        ProvisionalDate
+    }
+
 UserType -- User
 User - FavoriteArtists
+ProvisionalUser -- ProvisionalRepository
+note on link
+仮登録
+end note
+ProvisionalUser --> RegisteredProvisional
+ProvisionalUser --> ProvisionalRepository
+note on link
+本登録
+仮登録してから1時間以内
+新規登録ユーザーに同じメールアドレスがいない
+end note
 }
+
+rectangle 仮登録認証通知 {
+}
+
+RegisteredProvisional --> 仮登録認証通知
 
 rectangle RArtist {
 class Artist {
